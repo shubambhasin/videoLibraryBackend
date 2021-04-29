@@ -1,7 +1,10 @@
 const express = require('express');
 const app = express();
 const router = require('./routers/videosRouter.js')
+const connectDatabase = require("./DB/db.connect.js")
 
+
+connectDatabase()
 app.get('/', (req, res) => {
   res.send('careTv API')
 });

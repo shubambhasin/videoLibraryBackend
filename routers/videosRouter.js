@@ -6,7 +6,7 @@ router.route('/')
   res.send("Videos showm here")
 })
 .post((req, res) => {
-  res.send(req.body)
+  res.json(req.body)
 })
 
 module.exports = router;

@@ -31,12 +31,10 @@ const videoSchema = new Schema({
   },
    category: {
     type: String,
-    unique: true,
     required: true
   },
   subCategory: {
-    type: String,
-    unique: true
+    type: String
   },
   videoId: {
     type: String,

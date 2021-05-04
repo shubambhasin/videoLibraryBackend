@@ -1,25 +1,25 @@
 const express = require("express")
 const router = express.Router()
-const { History } = require('../models/historyModel.js')
+const { Saved } = require('../models/savedModel.js')
 
 router.route('/')
 .get( async (req, res) => {
 
-  const history = await History.find() 
-  res.status(200).send(history)
+  const saved = await Saved.find() 
+  res.status(200).send(saved)
 })
 .post( async (req, res) => {
 
    try {
     const {name, date, thumbnail, url, duration, description, category, videoId, subCategory} = req.body
 
-    const alreadyPresent = await History.find({ videoId: videoId})
+    const alreadyPresent = await Saved.find({ videoId: videoId})
 
     if(alreadyPresent)
     {
-      await History.deleteOne({videoId: videoId})
+      await Saved.deleteOne({videoId: videoId})
    }
-    const history = new History( {
+    const saved = new Saved( {
       name: name, 
       date: date, 
       thumbnail: thumbnail, 
@@ -31,8 +31,8 @@ router.route('/')
       subCategory: subCategory
 
     })
-    const savedHistory = await history.save()
-    console.log(savedHistory)
+    const savedVideo = await saved.save()
+    console.log(savedVideo)
     res.json({success: true, data: alreadyPresent})
        } 
    catch(err){

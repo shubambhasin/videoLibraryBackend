@@ -5,6 +5,7 @@ const mongoose = require('mongoose')
 const router = require('./routers/videosRouter.js')
 const connectDatabase = require("./DB/db.connect.js")
 const historyRouter = require('./routers/historyRouter')
+const savedRouter = require('./routers/savedRouter')
 
 app.use(cors())
 app.use(express.json());
@@ -19,6 +20,7 @@ app.get('/', (req, res) => {
 });
 app.use('/videos', router)
 app.use('/history', historyRouter)
+app.use('/saved', savedRouter)
 
 app.listen(3000, () => {
   console.log('server started');

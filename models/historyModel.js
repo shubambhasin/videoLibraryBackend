@@ -1,10 +1,37 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 const { Schema } = mongoose;
 
-const historySchema = new mongoose.Schema({
-  id: { type: Schema.Types.ObjectId, ref: "Video" },
-});
+const historySchema = new Schema({
+ 
+  name: {
+    type: String
+  },
+  date: {
+    type: String
+  },
+  url: {
+    type: String
+  },
+  thumbnail: {
+    type: String
+  },
+  description: {
+    type: String
+  },
+  duration: {
+    type: String
+  },
+   category: {
+    type: String
+  },
+  subCategory: {
+    type: String
+  },
+  videoId: {
+    type: String
+  },
+}, { timestamps: true })
 
-const HistoryVideos = new mongoose.model("", historySchema);
+const History = mongoose.model('history', historySchema)
 
-module.exports = { HistoryVideos };
+module.exports = { historySchema, History}

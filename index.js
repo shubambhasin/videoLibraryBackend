@@ -4,7 +4,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const router = require('./routers/videosRouter.js')
 const connectDatabase = require("./DB/db.connect.js")
-
+const historyRouter = require('./routers/historyRouter')
 
 app.use(cors())
 app.use(express.json());
@@ -18,6 +18,7 @@ app.get('/', (req, res) => {
   res.send('careTv API')
 });
 app.use('/videos', router)
+app.use('/history', historyRouter)
 
 app.listen(3000, () => {
   console.log('server started');

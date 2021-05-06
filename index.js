@@ -8,6 +8,8 @@ const historyRouter = require('./routers/historyRouter')
 const savedRouter = require('./routers/savedRouter')
 const likedRouter = require('./routers/likedRouter')
 const unlikedRouter = require('./routers/unlikedRouter')
+const signupRouter = require('./routers/signupRouter')
+const signinRouter = require('./routers/signinRouter')
 
 app.use(cors())
 app.use(express.json());
@@ -25,6 +27,8 @@ app.use('/history', historyRouter)
 app.use('/saved', savedRouter)
 app.use('/liked', likedRouter)
 app.use('/unliked', unlikedRouter)
+app.use('/signup', signupRouter)
+app.use('/signin', signinRouter)
 
 app.listen(3000, () => {
   console.log('server started');

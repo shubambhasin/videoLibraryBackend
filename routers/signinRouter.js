@@ -1,31 +1,45 @@
-const express = require('express')
-const mongoose = require('mongoose')
-const router = express.Router()
+const express = require('express');
+const jwt = require('jsonwebtoken')
 const { Signup } = require('../models/signupModel.js')
+const router = express.Router()
 
-router.route('/')
-.post(async (req, res) => {
-try{
-    const userCheck = req.body
-    // match with db
-    const email = await Signup.findOne({ email: userCheck.email })
-    const pass = await Signup.findOne({ password: userCheck.password })
-    
-    if (email) {
-      if (pass) {
-          res.status(200).json({ success: true, "user": {...req.body, userId: email._id } })
-      }
-      else {
-        res.status(401).json({ success: false, error: "password incorrect" })
-      }
-    }
+const mySecret = process.env['secret']
+const secret = mySecret
+const maxAge = 24*60*60
 
-    res.status(404).send({ success: false, error: "user do not exist"})
-
-} catch(err){
-  res.send({success: false, err: err})
+const handleError = (error, res) => {
+  console.log(error.message)
+  const errors = {
+    email: "",
+    password: ""
+  }
+  if(error.message === "Email not registered")
+  {
+    errors.email = "Email not registered"
+  }
+  if(error.message === "Password incorrect")
+  {
+    errors.password = "Password incorrect"
+  }
+res.json({error: errors})
 }
 
+const createToken = ( id ) => {
+  return jwt.sign( {id}, secret, {
+    expiresIn: maxAge*10
   })
+}
 
-module.exports = router;
+router.route('/')
+.post( async ( req, res ) => {
+  const { email, password } = req.body
+  try {
+    const user = await Signup.login( email, password )
+    const token = createToken(user._id)
+    res.status(200).json({name:user.name, token})
+  } catch(error) {
+    handleError(error, res)
+  }
+})
+
+module.exports = router

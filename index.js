@@ -10,6 +10,7 @@ const likedRouter = require('./routers/likedRouter')
 const unlikedRouter = require('./routers/unlikedRouter')
 const signupRouter = require('./routers/signupRouter')
 const signinRouter = require('./routers/signinRouter')
+const { History } = require('./models/historyModel.js')
 const { authenticateRoutes } = require('./middlewares/authenticateRoutes')
 app.use(cors())
 app.use(express.json());
@@ -22,13 +23,23 @@ mongoose.set('useCreateIndex', true);
 app.get('/', (req, res) => {
   res.send('careTv API')
 });
-app.use('/videos',authenticateRoutes, router)
-app.use('/history', authenticateRoutes, historyRouter)
-app.use('/saved', authenticateRoutes , savedRouter)
-app.use('/liked', authenticateRoutes, likedRouter)
-app.use('/unliked', authenticateRoutes, unlikedRouter)
+
+app.get('/check', async (req, res) => {
+
+
+  const data = await History.find()
+
+  res.send(data)
+
+})
+app.use('/videos', router)
+app.use('/history',historyRouter)
+app.use('/saved',  savedRouter)
+app.use('/liked', likedRouter)
+app.use('/unliked', unlikedRouter)
 app.use('/signup', signupRouter)
-app.use('/signin', signinRouter)
+app.use('/login', signinRouter)
+
 
 app.listen(3000, () => {
   console.log('server started');

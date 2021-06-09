@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 
-const mySecret = process.env['authToken']
+const mySecret = process.env['secret']
 const secret = mySecret
 const authenticateRoutes = (req, res, next) => {
   const token = req.headers.authorization

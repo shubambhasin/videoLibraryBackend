@@ -1,7 +1,9 @@
 const mongoose = require('mongoose')
 const { Schema } = mongoose;
+const bcrypt = require('bcrypt')
+const { isEmail } = require('validator')
 
-const signupSchema = new Schema( {
+const SignupSchema = new Schema( {
   name: {
     type: String,
     required: [true,"Please enter a name"]
@@ -20,6 +22,28 @@ const signupSchema = new Schema( {
 
 }, { timestamps: true})
 
-const Signup = mongoose.model('signup', signupSchema)
+SignupSchema.pre("save", async function(next){
+const salt = await bcrypt.genSalt()
+this.password = await bcrypt.hash(this.password, salt)
+next()
+})
+SignupSchema.statics.login = async function (email, password) {
 
-module.exports = { signupSchema, Signup }
+  const user = await this.findOne({ email })
+  if(user)
+  {
+    const result = await bcrypt.compare(password, user.password)
+    console.log(result)
+    if(result)
+    {
+      return user;
+    }
+    throw Error("Password incorrect")
+  }
+  throw Error("Email not registered")
+
+}
+
+const Signup = mongoose.model('signup', SignupSchema)
+
+module.exports = { SignupSchema, Signup }

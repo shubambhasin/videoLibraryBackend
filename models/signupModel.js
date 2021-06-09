@@ -4,19 +4,18 @@ const { Schema } = mongoose;
 const signupSchema = new Schema( {
   name: {
     type: String,
-    required: true,
+    required: [true,"Please enter a name"]
   },
-   email: {
+  email: {
     type: String,
-    required: true,
-    dropDups: true,
-    unique: true 
+    required: [true, "Please enter email"],
+    unique: true,
+    validate: [isEmail, "Please enter an valid Email"]
   },
   password: {
       type: String,
-      minLength: 6,
-      maxLength: 12,
-      required: true
+       type: String,
+    minlength: [6,"password should be atleast of 6 characters"]
   }
 
 }, { timestamps: true})

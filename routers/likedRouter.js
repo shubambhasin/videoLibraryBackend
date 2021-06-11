@@ -2,51 +2,73 @@ const express = require("express")
 const router = express.Router()
 const { Liked } = require('../models/likedModel.js')
 const { Unliked } = require('../models/unlikedModel.js')
+const { decodeUserId } = require('../utils/decodeUserId')
+
+// driver function 
+const addToLikedVideo = async (userId, videoId, Liked, res) => {
+
+   const user = await Liked.find({ userId })
+   console.log("from line 11", userId)
+ try{
+    if(user.length === 0)
+  {
+    const newLiked = new Liked({
+      userId: {userId},
+      videos:[videoId]
+    })
+    await newLiked.save()
+    const result = await Liked.findById({ userId}).populate('videos')
+    res.json({result})
+  }
+  else{
+    const videoAlreadyPresent = user[0].videos.includes(videoId)
+    if(videoAlreadyPresent)
+    {
+
+    }
+    else{
+      await Liked.findByIdAndUpdate(user[0]._id, {
+        $push: { videos: `${videoId}`}
+      })
+    }
+      const result = await Liked.find({ userId}).populate('videos')
+      res.json({success: true, result})
+  }
+ } catch(error)
+ {
+   console.log(error)
+   res.json({success: false, error: error.message})
+ }
+}
 
 router.route('/')
 .get( async (req, res) => {
 
-  const liked = await Liked.find() 
-  res.status(200).send(liked)
-  
+ const token = req.headers.authorization
+  try{
+    const userId = decodeUserId(token);
+    const likedVideos = await Liked.find({userId}).populate('videos') 
+    res.json({success: true, videos: likedVideos})
+  }
+  catch(error)
+  {
+    res.json({success: false, error: error.message})
+  }
 
 })
 .post( async (req, res) => {
-
-   try {
-    const {name, date, thumbnail, url, duration, description, category, videoId, subCategory} = req.body
-
-    const alreadyPresentInLiked = await Liked.find({ videoId: videoId})
-    const alreadyPresentInUnliked = await Unliked.find({videoId: videoId})
-
-    if(alreadyPresentInLiked)
-    {
-      await Liked.deleteOne({videoId: videoId})
+  const token = req.headers.authorization
+    const videoData = req.body.videoData   
+    try {
+      
+       const userId = decodeUserId( token )
+      //  console.log("USer id from:::::####", userId)
+       addToLikedVideo(userId, videoData._id, Liked, res)
     }
-    if(alreadyPresentInUnliked)
-    {
-      await Unliked.deleteOne({videoId: videoId})
+    catch(error){
+  console.log(error)
+  res.json({success: false, error: error.message})
     }
-    const liked = new Liked( {
-      name: name, 
-      date: date, 
-      thumbnail: thumbnail, 
-      duration: duration, 
-      description: description, 
-      url: url,
-      category: category,
-      videoId: videoId,
-      subCategory: subCategory
-
-    })
-    const savedLiked = await liked.save()
-    console.log(savedLiked)
-    res.json({success: true, data: alreadyPresentInLiked})
-       } 
-   catch(err){
-        res.json({success: false, errorrrrr: err})
-    }
-
 })
 
 module.exports = router;

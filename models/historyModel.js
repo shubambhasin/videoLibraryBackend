@@ -3,7 +3,9 @@ const { Schema } = mongoose;
 
 const historySchema = new Schema({
  
-  userId: {type: Schema.Types.ObjectId, ref: "signup"},
+  userId: {
+    type: mongoose.SchemaTypes.ObjectId, 
+    ref: "signup"},
   videos: [{
     type: Schema.Types.ObjectId,
     ref: "video"

@@ -5,6 +5,7 @@ const { Signup, signupSchema } = require('../models/signupModel.js')
 const mySecret = process.env['secret']
 const secret = mySecret
 
+
 const handleError = (error, res) => {  
   console.log(error.message)
   const errors = {
@@ -53,9 +54,9 @@ router.route('/')
         email: email, 
         password: password
     })
-      const savedData = await newUser.save()
-      const token = createToken(savedData._id)
-      res.json({success: true, name: savedData.name, token})
+      const user = await newUser.save()
+      const token = createToken(user._id)
+      res.json({success: true, name: user.name, token})
     }
     catch(error){
       handleError(error, res)

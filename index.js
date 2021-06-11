@@ -33,9 +33,9 @@ app.get('/check', async (req, res) => {
 
 })
 app.use('/videos', router)
-app.use('/history',historyRouter)
-app.use('/saved',  savedRouter)
-app.use('/liked', likedRouter)
+app.use('/history', authenticateRoutes, historyRouter)
+app.use('/saved', authenticateRoutes, savedRouter)
+app.use('/liked', authenticateRoutes, likedRouter)
 app.use('/unliked', unlikedRouter)
 app.use('/signup', signupRouter)
 app.use('/login', signinRouter)
